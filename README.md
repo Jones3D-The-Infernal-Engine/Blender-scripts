@@ -1,14 +1,13 @@
-# I. Configure Blender 2.79 for Indiana Jones and the Infernale Machine 3D modelling.
+# Blender scripts for Indiana Jones and The Infernal Machine game
+This repository contains different scripts for editing 3D game assets of the game Indiana Jones and the Infernal Machine.
 
-Note: This Blender add-on is partially complete and functional (faces and lightning properties menu are missing due to lack of UI support in Blender, these infos must be writed in the .3do file with text editor), but you can create/modify any model and import it into the game.
+## Requirements
+The scripts in this repository require the Sith Blender add-on to be installed.  
+You can download the addon from: [https://github.com/smlu/blender-sith](https://github.com/smlu/blender-sith)
 
-1. Download the add-on and follow installation instructions at:
-https://github.com/smlu/blender-ijim
+## Scripts
+### obj_to_ndy.py
+Script exports selected object and it's hierarchy to NDY/JKL file format.
 
-2. You are now able to mod the .3do files.
-
-# II. Use script to create sector of levels.
-
-*** In progress
-
-# End
+### mat_reimporter.py
+Script tries to re-import all loaded .mat texture files from specific folder.
