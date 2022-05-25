@@ -9,8 +9,8 @@
 # Copy the script in Blender script editor, select object and run the script.
 
 import bpy
+from math import degrees, pow, sqrt
 from mathutils import Vector, Matrix
-from math import isclose, pow, sqrt
 
 from sith.text.serutils import *
 from sith.model import *
@@ -276,6 +276,10 @@ def _surface_vertex_colors_to_str(version: NdyVersion, vert_idxs: List[int], ver
         out += '{}\t'.format(color)
     return out
 
+def _is_floor(face: Mesh3doFace):
+    # if face is banked for less than 46 degrees it's a ground floor
+    return round(degrees(Vector(face.normal).angle((0.0, 0.0, 1.0)))) <= 45
+
 def _ndy_write_surfaces(file, version: NdyVersion, meshes: List[Mesh3do], mat_start_idx, vert_start_idx, uv_start_idx, surface_start_idx):
     num_faces = sum(len(m.faces) for m in meshes)
     
@@ -289,8 +293,8 @@ def _ndy_write_surfaces(file, version: NdyVersion, meshes: List[Mesh3do], mat_st
             writeLine(file, f"# Surfaces of Sector {sec_idx}")
         for idx, face in enumerate(m.faces):
             surfflags = default_surfflags
-            if isclose(face.normal.z, 1.0, rel_tol=1e-09, abs_tol=0.0):
-                surfflags |= 0x01 # floor
+            if _is_floor(face):
+                surfflags |= 0x05 # 0x1 - floor | 0x4 - Collision
 
             row = '{}:\t'.format(surface_start_idx + idx)          # row idx
             row += '{}\t'.format(mat_start_idx + face.materialIdx) # mat idx
