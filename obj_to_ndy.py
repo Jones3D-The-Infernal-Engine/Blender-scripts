@@ -217,7 +217,7 @@ def _ndy_write_colormaps(file):
 def _ndy_write_write_vertices(file, model: Model3do, start_idx) -> List[Mesh3do]:
     vertices = []
     meshes = []
-    for n in model.hierarchyNodes:
+    for n in model.meshHierarchy:
         if n.meshIdx < 0: continue
         m = model.geosets[0].meshes[n.meshIdx]
         meshes.append(m) 
@@ -410,7 +410,7 @@ def _ndy_write_section_sectors(file, version: NdyVersion, model: Model3do, secto
             color = _rgba_to_intensity(color)
         return _color_to_str(color)
 
-    for idx, n in enumerate(model.hierarchyNodes):
+    for idx, n in enumerate(model.meshHierarchy):
         if n.meshIdx < 0: 
             idx -= 1
             continue
