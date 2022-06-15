@@ -17,7 +17,7 @@ from sith.model import *
 from sith.model.model3doWriter import _vector_to_str as vec2str
 from sith.model.model3doWriter import _radius_to_str as r2str
 from sith.model.model3doExporter import _model3do_add_obj as model3do_add_obj
-from sith.types.vector import *
+from sith.types import Vector3f, Vector4f
 
 from enum import Enum
 from typing import List, Tuple
@@ -464,7 +464,7 @@ model = _make_model3do_from_obj(obj, out_version)
 assert len(model.geosets) == 1, "Converted OBJ to 3DO model must have exact 1 geoset"
 
 # Write to ndy file
-f = open(out_file, 'w')
+f = open(out_file, 'w', encoding='utf-8')
 
 # write copyright and header sections
 _ndy_write_section_lec_and_header(f, out_version)
