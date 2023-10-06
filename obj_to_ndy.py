@@ -1,7 +1,7 @@
 # Created by Crt Vavros.
 # The idea of this script is to export blender object hierarchy geometry to NDY/JKL file format and
-# then paste exported sections to the end of existing NDY/JKL file to be modified. 
-# To get correct indices of exported object's georesurces set script's variables: 
+# then paste exported sections to the end of existing NDY/JKL file to be modified.
+# To get correct indices of exported object's georesurces set script's variables:
 #   mat_start_idx, vert_start_idx, uv_start_idx and surface_start_idx accordingly.
 # Exported NDY/JKL sections: copyright, header, materials and georesources without adjoin section.
 
@@ -201,7 +201,7 @@ def _ndy_write_section_materials(file, version: NdyVersion, materials, start_idx
     for idx, mat in enumerate(materials):
         row = '{:}: {:>15}'.format(start_idx + idx, mat)
         if version != NdyVersion.IJIM:
-           row += "\t1.000000\t1.000000" 
+           row += "\t1.000000\t1.000000"
         writeLine(file, row)
 
     writeLine(file, "end")
@@ -220,11 +220,11 @@ def _ndy_write_write_vertices(file, model: Model3do, start_idx) -> List[Mesh3do]
     for n in model.meshHierarchy:
         if n.meshIdx < 0: continue
         m = model.geosets[0].meshes[n.meshIdx]
-        meshes.append(m) 
+        meshes.append(m)
         for v in m.vertices:
             vert = _vec_convert_to_space(n.obj.matrix_world, v) # convert vertex coordinates to global
             vertices.append(vert)
-    
+
     writeKeyValue(file, "World vertices", start_idx + len(vertices))
     writeNewLine(file)
 
@@ -243,7 +243,7 @@ def _ndy_write_uv_vertices(file, meshs: List[Mesh3do], start_idx):
     for m in meshs:
         for uv in m.uvs:
             uvs.append(uv)
-            
+
     writeKeyValue(file, "World texture vertices", start_idx + len(uvs))
     writeNewLine(file)
 
@@ -282,7 +282,7 @@ def _is_floor(face: Mesh3doFace):
 
 def _ndy_write_surfaces(file, version: NdyVersion, meshes: List[Mesh3do], mat_start_idx, vert_start_idx, uv_start_idx, surface_start_idx):
     num_faces = sum(len(m.faces) for m in meshes)
-    
+
     writeKeyValue(file, "World surfaces", surface_start_idx + num_faces)
     writeNewLine(file)
 
@@ -311,7 +311,7 @@ def _ndy_write_surfaces(file, version: NdyVersion, meshes: List[Mesh3do], mat_st
 
             # Local space face normal coordinates
             face_normals.append(face.normal)
-            
+
         # increment start indices
         surface_start_idx += len(m.faces)
         vert_start_idx    += len(m.vertices)
@@ -395,7 +395,7 @@ def _get_sector_dimensions(mesh: Mesh3do, world_matrix):
 
 def _ndy_write_section_sectors(file, version: NdyVersion, model: Model3do, sector_idx, vert_start_idx, surface_start_idx):
     meshes = model.geosets[0].meshes
-    
+
     writeCommentLine(f, "###### Sector information ######")
     writeSectionTitle(f, "SECTORS")
 
@@ -410,9 +410,9 @@ def _ndy_write_section_sectors(file, version: NdyVersion, model: Model3do, secto
             color = _rgba_to_intensity(color)
         return _color_to_str(color)
 
-    for idx, n in enumerate(model.meshHierarchy):
-        if n.meshIdx < 0: 
-            idx -= 1
+    idx = 0
+    for n in model.meshHierarchy:
+        if n.meshIdx < 0:
             continue
         m = meshes[n.meshIdx]
 
@@ -441,6 +441,8 @@ def _ndy_write_section_sectors(file, version: NdyVersion, model: Model3do, secto
         writeKeyValue(file, 'SURFACES', '{} {}'.format(surface_start_idx, len(m.faces)))
         surface_start_idx += len(m.faces)
         writeNewLine(f)
+
+        idx += 1
 
 def _make_model3do_from_obj(obj: bpy.types.Object, version: NdyVersion):
     model = Model3do(obj.name)
